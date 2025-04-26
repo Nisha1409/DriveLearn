@@ -16,10 +16,7 @@ const Login = () => {
   const router = useRouter();
 
   const formik = useFormik({
-    initialValues: {
-      email: '',
-      password: '',
-    },
+    initialValues: { email: '', password: '' },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       try {
@@ -31,12 +28,11 @@ const Login = () => {
 
         if (res.ok) {
           const data = await res.json();
-          console.log('Login response:', data); // Debugging log
-          localStorage.setItem('userId', data.userId); // Store userId in localStorage
-          router.push('/dashboard'); // Redirect to dashboard
+          localStorage.setItem('userId', data.userId);
+          router.push('/dashboard');
         } else {
           const errorData = await res.json();
-          formik.setErrors({ email: errorData.message }); // Display error message
+          formik.setErrors({ email: errorData.message });
         }
       } catch (err) {
         console.error('Login error:', err);
@@ -53,54 +49,38 @@ const Login = () => {
         <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet" />
       </Head>
 
-      <div className="bg-mainbg min-h-screen flex justify-between pt-7 px-16 w-full">
-        <div className="pt-1 pb-8 w-[29%]">
-          <h2 className="text-2xl font-bold mb-1">Welcome Back</h2>
+      <div className="bg-mainbg min-h-screen flex flex-col md:flex-row justify-center items-center px-8 md:px-16 w-full">
+        <div className="w-full md:w-[40%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg text-center md:text-left">
+          <h2 className="text-2xl font-bold mb-2">Welcome Back</h2>
           <p className="mb-4">Login to your account</p>
 
-          <form className="pt-3" onSubmit={formik.handleSubmit}>
-            <TextField
-              size="small"
-              variant="standard"
-              fullWidth
-              id="email"
-              name="email"
-              label="Email"
-              value={formik.values.email}
-              onChange={formik.handleChange}
-              error={formik.touched.email && Boolean(formik.errors.email)}
-              helperText={formik.touched.email && formik.errors.email}
-              className="mb-4"
-            />
+          <form className="space-y-4" onSubmit={formik.handleSubmit}>
+            {['email', 'password'].map((field) => (
+              <TextField
+                key={field}
+                size="small"
+                variant="outlined"
+                fullWidth
+                id={field}
+                name={field}
+                label={field.charAt(0).toUpperCase() + field.slice(1)}
+                type={field === 'password' ? 'password' : 'text'}
+                value={formik.values[field as keyof typeof formik.values] || ""}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                error={Boolean(formik.touched[field as keyof typeof formik.touched] && formik.errors[field as keyof typeof formik.errors])}
+                helperText={formik.touched[field as keyof typeof formik.touched] ? formik.errors[field as keyof typeof formik.errors] : ""}
+              />
+            ))}
 
-            <TextField
-              size="small"
-              variant="standard"
-              fullWidth
-              id="password"
-              name="password"
-              label="Password"
-              type="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              error={formik.touched.password && Boolean(formik.errors.password)}
-              helperText={formik.touched.password && formik.errors.password}
-              className="mb-6"
-            />
 
             <MainButton text="Login" />
-
-            <div className="flex justify-center mt-3 text-sm">
-              <span>Do not have an account?</span>
-              <Link href="/SignUp" className="mx-2 text-[#1F59EE]">
-                Sign Up
-              </Link>
-            </div>
+            <p className="mt-3 text-sm">Don't have an account? <Link href="/SignUp" className="text-blue-500">Sign Up</Link></p>
           </form>
         </div>
 
-        <div className="w-[62%] flex items-center justify-center">
-          <img src="/images/projectSignIn.jpg" alt="Signup Visual" className="max-w-full h-auto" />
+        <div className="hidden md:block w-[60%] flex items-center justify-center">
+          <img src="/images/projectSignIn.jpg" alt="Signup Visual" className="max-w-full h-auto rounded-lg shadow-md" />
         </div>
       </div>
     </>

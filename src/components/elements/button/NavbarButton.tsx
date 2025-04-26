@@ -1,23 +1,23 @@
-import React from 'react'
-import { Button } from "@mui/material";
+import React from 'react';
+import { Button } from '@mui/material';
 
+const NavbarButton = (props: any) => {
+  const { text, type } = props;
 
-const NavbarButton = (props:any) => {
-    const {text, type } = props
-    return (
-        <Button
-        size='small'
-        variant='text'
-         className={type ?
-          'capitalize text-base bg-mainblack font-normal px-4 hover:opacity-80 hover:bg-mainblack text-white  ease-in duration-200 transition-all rounded-tl-xl  rounded-br-xl  rounded-none' 
-         : 
-         'capitalize text-base  font-normal px-4 hover:opacity-80  text-black  ease-in duration-200 transition-all rounded-tl-xl  rounded-br-xl  rounded-none'}
-        //  fullWidth
-        //   type="submit"
-          >
-        {text}
-        </Button>
-    );
+  return (
+    <Button
+      size="small"
+      variant="text"
+      className={`capitalize font-normal px-4 py-2 text-sm sm:text-base md:text-lg lg:text-xl transition-all ease-in duration-200 rounded-tl-xl rounded-br-xl
+        ${
+          type
+            ? 'bg-mainblack text-white hover:bg-mainblack hover:opacity-80 shadow-md'
+            : 'text-black hover:opacity-80 bg-transparent'
+        }`}
+    >
+      {text}
+    </Button>
+  );
 };
 
 export default NavbarButton;

@@ -1,14 +1,22 @@
 import React from 'react';
-import { Button } from "@mui/material";
+import { Button } from '@mui/material';
 
-const SalonMoverButton = (props:any) => {
-    const {text,type} = props
-    return (
-        <Button size='small'
-        className={type ? 'bg-black font-semibold rounded-xl capitalize px-9 text-white hover:bg-black transition-all ease-in duration-300' 
-        : 'font-semibold rounded-xl px-9 text-black hover:bg-inherit capitalize transition-all ease-in duration-300'}
-        >{text}</Button>
-    );
+const SalonMoverButton = (props: any) => {
+  const { text, type } = props;
+
+  return (
+    <Button
+      size="small"
+      className={`font-semibold capitalize px-6 py-2 rounded-xl transition-all ease-in duration-300 shadow-md text-sm sm:text-base md:text-lg lg:text-xl
+        ${
+          type
+            ? 'bg-black text-white hover:bg-gray-800 hover:shadow-lg'
+            : 'text-black hover:bg-gray-100 hover:shadow-md'
+        }`}
+    >
+      {text}
+    </Button>
+  );
 };
 
 export default SalonMoverButton;
