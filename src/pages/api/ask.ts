@@ -15,91 +15,77 @@ const pool = new Pool({
   },
 });
 
-if (!process.env.DEEPSEEK_API_KEY) {
-  throw new Error('DEEPSEEK_API_KEY is not defined in the environment variables');
-}
+// Store multiple API keys for fallback
+const API_KEYS = [
+  process.env.DEEPSEEK_API_KEY,
+  process.env.DEEPSEEK_API_KEY1,
+  process.env.DEEPSEEK_API_KEY2
+];
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  res.setHeader('Content-Type', 'application/json');
+// Function to fetch AI response with fallback mechanism
+async function fetchAIResponse(prompt: string): Promise<string> {
+  const referer = process.env.REFERER_URL || 'http://localhost:3000';
 
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { question, userId } = req.body;
-
-  if (!question || !question.trim()) {
-    console.error('Invalid question input'); // Debugging log
-    return res.status(400).json({ error: 'Question cannot be empty' });
-  }
-
-  if (!userId) {
-    console.error('Missing userId'); // Debugging log
-    return res.status(400).json({ error: 'User ID is required' });
-  }
-
-  console.log('Fetching user info for userId:', userId); // Debugging log
-
-  try {
-    const userResult = await pool.query('SELECT id, board FROM users WHERE id = $1', [userId]);
-    console.log('Database query result:', userResult.rows); // Debugging log
-
-    if (userResult.rows.length === 0) {
-      console.error('No user found for userId:', userId); // Debugging log
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    const user = userResult.rows[0];
-    const prompt = `You are a tutor for the ${user.board} board. Provide a simple and clear explanation for the following question without using extra formatting like bold (**), hashtags (#), or special characters: ${question}`;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
-
+  for (const apiKey of API_KEYS) {
     try {
-      const referer = process.env.REFERER_URL || 'http://localhost:3000';
+      console.log(`Trying API key: ${apiKey}`);
       const openRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-          "HTTP-Referer": referer, // Replace with your site URL
-          "X-Title": "DriveLearn", // Replace with your site title
+          "Authorization": `Bearer ${apiKey}`,
+          "HTTP-Referer": referer,
+          "X-Title": "DriveLearn",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
           model: "deepseek/deepseek-chat-v3-0324",
           messages: [{ role: "user", content: prompt }],
         }),
-        signal: controller.signal,
       });
-      clearTimeout(timeout);
 
-      if (!openRes.ok) {
-        const errorText = await openRes.text();
-        console.error('OpenRouter API error:', errorText); // Debugging log
-        return res.status(openRes.status).json({ error: `OpenRouter API error: ${errorText}` });
+      if (openRes.ok) {
+        const data = await openRes.json();
+        console.log('API response:', data);
+        return data.choices?.[0]?.message?.content || 'No answer received.';
+      } else {
+        console.warn(`API key failed (${apiKey}):`, await openRes.text());
       }
-
-      const data = await openRes.json();
-      console.log('OpenRouter API response:', data); // Debugging log
-      const answer = data.choices?.[0]?.message?.content || 'No answer received.';
-
-      await pool.query(
-        'INSERT INTO history (user_id, question, answer) VALUES ($1, $2, $3)',
-        [userId, question, answer]
-      );
-      console.log('Question and answer saved to history:', { userId, question, answer }); // Debugging log
-
-      return res.status(200).json({ answer });
     } catch (err) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        console.error('OpenRouter API request timed out'); // Debugging log
-        return res.status(504).json({ error: 'OpenRouter API request timed out' });
-      }
-
-      console.error('Error calling OpenRouter API:', err); // Debugging log
-      return res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
+      console.error(`Error using API key (${apiKey}):`, err);
     }
+  }
+
+  return 'Error: All API keys failed.';
+}
+
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
+
+  const { question, userId } = req.body;
+  if (!question || !question.trim()) return res.status(400).json({ error: 'Question cannot be empty' });
+  if (!userId) return res.status(400).json({ error: 'User ID is required' });
+
+  console.log('Fetching user info for userId:', userId);
+  try {
+    const userResult = await pool.query('SELECT id, board FROM users WHERE id = $1', [userId]);
+    if (userResult.rows.length === 0) return res.status(404).json({ error: 'User not found' });
+
+    const user = userResult.rows[0];
+    const prompt = `You are a tutor for the ${user.board} board. Provide a simple and clear explanation for the following question without using extra formatting like bold (**), hashtags (#), or special characters: ${question}`;
+    // 🔥 Fetch AI response using fallback mechanism 🔥
+    const answer = await fetchAIResponse(prompt);
+
+    await pool.query(
+      'INSERT INTO history (user_id, question, answer) VALUES ($1, $2, $3)',
+      [userId, question, answer]
+    );
+
+    return res.status(200).json({ answer });
+
   } catch (err) {
-    console.error('Error in /api/ask:', err); // Debugging log
+    console.error('Error:', err);
     return res.status(500).json({ error: 'Internal server error', details: err instanceof Error ? err.message : err });
   }
 }
