@@ -29,9 +29,9 @@ const HomeIntroduction = () => {
   return (
     <div className="px-6 sm:px-12 md:px-24 lg:px-32 mt-16 sm:mt-28 md:mt-32 z-10 relative text-center">
       <div className="bg-secondbg px-4 sm:px-8 h-auto md:h-[480px] flex flex-col md:flex-row pt-5 pb-3 justify-center md:justify-around shadow-lg gap-6">
-        
-        {/* Image Carousel */}
-        <div className="w-full md:w-1/3 relative flex justify-center">
+
+        {/* Image Carousel - Only for Large Screens */}
+        <div className="w-full md:w-1/3 relative flex justify-center hidden sm:flex">
           <div className="relative w-full">
             {['i1', 'i2', 'i3'].map((key, index) => (
               <img
@@ -43,6 +43,7 @@ const HomeIntroduction = () => {
             ))}
           </div>
         </div>
+
 
         {/* Text Content */}
         <div className="w-full md:w-2/3 flex flex-col items-center md:items-start text-center md:text-left">
@@ -63,7 +64,7 @@ const HomeIntroduction = () => {
           <div className="flex flex-col items-center md:items-start w-full sm:w-2/3 mt-5 text-sm sm:text-base md:text-lg font-medium leading-relaxed">
             <h2>
               DriveLearn empowers students to ask questions freely,
-              learn through step-by-step AI guidance, and grow with personalized insights 
+              learn through step-by-step AI guidance, and grow with personalized insights
               and visual aids—turning everyday doubts into confident understanding and success.
             </h2>
           </div>

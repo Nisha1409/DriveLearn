@@ -19,7 +19,7 @@ const AboutUs = () => {
         
         {/* Left Side - Images */}
         <div className="w-full md:w-1/2 relative flex flex-col items-center">
-          <img src="../../images/aboutus1.png" className="h-64 sm:h-72 md:h-80 max-w-full rounded-md shadow-md" alt="About Us 1" />
+          <img src="../../images/aboutUs1.png" className="h-64 sm:h-72 md:h-80 max-w-full rounded-md shadow-md" alt="About Us 1" />
           <div className="flex justify-end absolute top-64 md:top-72 w-full">
             <img src="../../images/aboutus2.png" className="h-32 sm:h-40 md:h-44 max-w-full rounded-md shadow-md" alt="About Us 2" />
           </div>
