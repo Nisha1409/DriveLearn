@@ -10,6 +10,9 @@ const pool = new Pool({
   database: process.env.PG_DATABASE,
   password: process.env.PG_PASSWORD,
   port: parseInt(process.env.PG_PORT || '5432'),
+  ssl: {
+    rejectUnauthorized: false, // Allows self-signed certificates
+  },
 });
 
 if (!process.env.DEEPSEEK_API_KEY) {
@@ -52,16 +55,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const timeout = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
 
     try {
+      const referer = process.env.REFERER_URL || 'http://localhost:3000';
       const openRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
         method: "POST",
         headers: {
           "Authorization": `Bearer ${process.env.DEEPSEEK_API_KEY}`,
-          "HTTP-Referer": "http://localhost:3000", // Replace with your site URL
+          "HTTP-Referer": referer, // Replace with your site URL
           "X-Title": "DriveLearn", // Replace with your site title
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "deepseek/deepseek-chat-v3-0324", // Updated model
+          model: "deepseek/deepseek-chat-v3-0324",
           messages: [{ role: "user", content: prompt }],
         }),
         signal: controller.signal,
