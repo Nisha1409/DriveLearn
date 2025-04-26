@@ -37,15 +37,14 @@ const Signup = () => {
   return (
     <>
       <Head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet" />
+        <title>Sign Up | AI Tutor</title>
       </Head>
 
-      <div className="bg-mainbg min-h-screen flex flex-col md:flex-row justify-center items-center px-8 sm:px-12 md:px-16 lg:px-20">
-        <div className="w-full md:w-[45%] max-w-xs sm:max-w-sm md:max-w-lg text-center md:text-left bg-white shadow-lg rounded-lg p-6 sm:p-8">
-          <h2 className="text-3xl font-bold mb-3 text-gray-800">Welcome To AI Tutor</h2>
-          <p className="text-gray-600 text-base sm:text-lg mb-6">Create your account</p>
+      <div className="bg-gradient-to-b from-[#f9f6e7] to-white min-h-screen flex flex-col md:flex-row items-center justify-center px-6 sm:px-12 md:px-16 lg:px-20">
+        {/* Signup Form */}
+        <div className="w-full md:w-2/5 max-w-md sm:max-w-lg bg-white shadow-xl rounded-lg p-6 sm:p-8">
+          <h2 className="text-3xl font-bold text-gray-800 text-center mb-3">Welcome To AI Tutor</h2>
+          <p className="text-gray-600 text-base sm:text-lg text-center mb-6">Create your account</p>
 
           <form className="space-y-5" onSubmit={formik.handleSubmit}>
             {['name', 'email', 'password', 'confirmPassword'].map((field) => (
@@ -58,22 +57,51 @@ const Signup = () => {
                 name={field}
                 label={field.charAt(0).toUpperCase() + field.slice(1)}
                 type={field.includes('password') ? 'password' : 'text'}
-                value={formik.values[field as keyof typeof formik.values] || ''}
+                value={formik.values[field]}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                error={Boolean(formik.touched[field as keyof typeof formik.touched] && formik.errors[field as keyof typeof formik.errors])}
-                helperText={formik.touched[field as keyof typeof formik.touched] ? formik.errors[field as keyof typeof formik.errors] : ""}
+                error={Boolean(formik.touched[field] && formik.errors[field])}
+                helperText={formik.touched[field] ? formik.errors[field] : ''}
+                className="bg-white"
               />
             ))}
 
-            <MainButton text="Sign Up" />
-            <p className="text-sm mt-4">Already have an account? <Link href="/login" className="text-blue-600 hover:underline">Login</Link></p>
+            {/* Board Selection */}
+            <div className="flex flex-col">
+              <label className="text-sm font-medium mb-2">Select Board</label>
+              <select
+                id="board"
+                name="board"
+                value={formik.values.board}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+                className="border border-gray-300 rounded-lg py-2 px-3 bg-white text-gray-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                <option value="" disabled>Select your board</option>
+                <option value="CBSE">CBSE</option>
+                <option value="ICSE">ICSE</option>
+                <option value="State">State</option>
+              </select>
+              {formik.touched.board && formik.errors.board && (
+                <p className="text-red-600 text-xs mt-1">{formik.errors.board}</p>
+              )}
+            </div>
+
+            <MainButton text="Sign Up" className="w-full py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all" />
+
+            {/* Login Link */}
+            <p className="text-sm text-center mt-4">
+              Already have an account?{' '}
+              <Link href="/login" className="text-blue-600 hover:underline">
+                Login
+              </Link>
+            </p>
           </form>
         </div>
 
         {/* Image Section */}
-        <div className="hidden md:block w-[50%] flex items-center justify-center">
-          <img src="/images/projectSignIn.jpg" alt="Signup Visual" className="max-w-full h-auto rounded-lg shadow-md hover:scale-105 transition-all duration-300" />
+        <div className="hidden md:block w-1/2 flex items-center justify-center">
+          <img src="/images/projectSignIn.jpg" alt="Signup Visual" className="max-w-full h-auto rounded-lg shadow-md hover:scale-105 transition-transform duration-300" />
         </div>
       </div>
     </>
