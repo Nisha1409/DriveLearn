@@ -47,7 +47,7 @@ const Signup = () => {
           <p className="text-gray-600 text-base sm:text-lg text-center mb-6">Create your account</p>
 
           <form className="space-y-5" onSubmit={formik.handleSubmit}>
-            {['name', 'email', 'password', 'confirmPassword'].map((field) => (
+            {(['name', 'email', 'password', 'confirmPassword'] as const).map((field) => (
               <TextField
                 key={field}
                 size="small"
@@ -57,14 +57,14 @@ const Signup = () => {
                 name={field}
                 label={field.charAt(0).toUpperCase() + field.slice(1)}
                 type={field.includes('password') ? 'password' : 'text'}
-                value={formik.values[field]}
+                value={formik.values[field]} // ✅ No more indexing error
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={Boolean(formik.touched[field] && formik.errors[field])}
                 helperText={formik.touched[field] ? formik.errors[field] : ''}
-                className="bg-white"
               />
             ))}
+
 
             {/* Board Selection */}
             <div className="flex flex-col">
