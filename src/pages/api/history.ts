@@ -35,12 +35,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { userId } = req.body as HistoryRequestBody;
+  console.log('Received request body:', req.body); // Debugging log
 
   if (!userId) {
     return res.status(400).json({ success: false, error: 'User ID is required' });
   }
 
   try {
+    console.log('Fetching history for userId:', userId); // Debugging log
     const query = 'SELECT question FROM history WHERE user_id = $1 ORDER BY created_at DESC';
     const { rows } = await pool.query(query, [userId]);
     const history = rows.map((row) => row.question);

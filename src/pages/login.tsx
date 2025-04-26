@@ -45,16 +45,16 @@ const Login = () => {
     <>
       <Head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Outfit&display=swap" rel="stylesheet" />
       </Head>
 
-      <div className="bg-mainbg min-h-screen flex flex-col md:flex-row justify-center items-center px-8 md:px-16 w-full">
-        <div className="w-full md:w-[40%] max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg text-center md:text-left">
-          <h2 className="text-2xl font-bold mb-2">Welcome Back</h2>
-          <p className="mb-4">Login to your account</p>
+      <div className="bg-mainbg min-h-screen flex flex-col md:flex-row justify-center items-center px-6 md:px-12 lg:px-20">
+        <div className="w-full md:w-[45%] max-w-xs sm:max-w-sm md:max-w-lg bg-white shadow-lg rounded-lg p-6 sm:p-8 text-center md:text-left">
+          <h2 className="text-3xl font-bold mb-3 text-gray-800">Welcome Back</h2>
+          <p className="text-gray-600 text-base sm:text-lg mb-6">Login to your account</p>
 
-          <form className="space-y-4" onSubmit={formik.handleSubmit}>
+          <form className="space-y-5" onSubmit={formik.handleSubmit}>
             {['email', 'password'].map((field) => (
               <TextField
                 key={field}
@@ -73,14 +73,14 @@ const Login = () => {
               />
             ))}
 
-
             <MainButton text="Login" />
-            <p className="mt-3 text-sm">Don't have an account? <Link href="/SignUp" className="text-blue-500">Sign Up</Link></p>
+            <p className="text-sm mt-4">Don't have an account? <Link href="/SignUp" className="text-blue-600 hover:underline">Sign Up</Link></p>
           </form>
         </div>
 
-        <div className="hidden md:block w-[60%] flex items-center justify-center">
-          <img src="/images/projectSignIn.jpg" alt="Signup Visual" className="max-w-full h-auto rounded-lg shadow-md" />
+        {/* Image Section */}
+        <div className="hidden md:block w-[50%] flex items-center justify-center">
+          <img src="/images/projectSignIn.jpg" alt="Signup Visual" className="max-w-full h-auto rounded-lg shadow-md hover:scale-105 transition-all duration-300" />
         </div>
       </div>
     </>

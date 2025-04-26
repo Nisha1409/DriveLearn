@@ -46,7 +46,7 @@ const HomeIntroduction = () => {
 
         {/* Text Content */}
         <div className="w-full md:w-2/3 flex flex-col items-center md:items-start text-center md:text-left">
-          <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl">BEAUTY</h1>
+          <h1 className="font-bold text-2xl sm:text-3xl md:text-4xl">EDUCATE</h1>
 
           <div className="w-2/3 mx-auto md:mx-0">
             <Divider style={{ borderColor: 'black', fontSize: 28 }}>

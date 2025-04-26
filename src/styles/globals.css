@@ -6,6 +6,11 @@
 * {
     font-family: 'Outfit', sans-serif !important;
 }
+html, body {
+  overflow-x: hidden; /* Prevent horizontal scrolling */
+  width: 100vw; /* Ensure proper viewport width */
+}
+
 
 h1 {
     font-family: 'Baskervville', serif !important;

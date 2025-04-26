@@ -7,12 +7,12 @@ const HeroSection = () => {
             
             {/* Left Side - Image */}
             <div className="w-full md:w-1/2 flex justify-center">
-                <img src="../../images/heroSection.png" className="h-64 sm:h-72 md:h-96 max-w-full rounded-lg shadow-md" alt="Hero Section" />
+                <img src="../../images/heroSection.png" className="h-67 sm:h-72 md:h-91 max-w-full rounded-lg shadow-md" alt="Hero Section" />
             </div>
 
             {/* Right Side - Text & Button */}
             <div className="w-full md:w-2/3 flex flex-col items-center md:items-start gap-5">
-                <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold text-center md:text-left">
+                <h1 className="text-2xl sm:text-3xl md:text-5xl font-bold te5xt-center md:text-left">
                     Make Your Future Bright
                 </h1>
                 <h3 className="text-sm sm:text-base md:text-lg font-medium w-full sm:w-3/4 text-center md:text-left">
