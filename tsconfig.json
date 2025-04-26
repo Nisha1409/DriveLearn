@@ -19,6 +19,6 @@
     },
     "types": ["node"] // Add this line to include Node.js types
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/HomePage"],
   "exclude": ["node_modules"]
 }
