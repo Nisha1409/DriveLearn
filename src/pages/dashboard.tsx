@@ -76,27 +76,15 @@ export default function Home() {
 
 
   const toggleHistory = async () => {
-    const userId = localStorage.getItem('userId');
-    if (!userId) {
-      alert('User not logged in.');
-      router.push('/login');
-      return;
-    }
-
-    if (!showHistory) {
-      setIsHistoryLoading(true);
-      try {
-        const res = await axios.post('/api/history', { userId });
-        setHistory(res.data.data.history);
-      } catch (err) {
-        console.error('Error fetching history:', err);
-        alert('Failed to load history.');
-      } finally {
-        setIsHistoryLoading(false);
-      }
-    }
-    setShowHistory((prev) => !prev);
+    setIsHistoryLoading(true); // Start loading state
+    
+    // Simulate minimal delay for UX (optional)
+    setTimeout(() => {
+      router.push('/history'); // Redirects to History page
+      setIsHistoryLoading(false); // Stop loading state after redirection
+    }, 500); // Adjust time as needed
   };
+  
 
   return (
     <div className="min-h-screen flex flex-col items-center px-8 sm:px-12 md:px-20 lg:px-32 xl:px-40 bg-gradient-to-b from-[#f9f6e7] to-white w-full">
@@ -190,3 +178,5 @@ export default function Home() {
     </div>
   );
 }
+
+
