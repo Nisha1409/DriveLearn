@@ -60,19 +60,19 @@ export default function Home() {
     }
   };
 
- const handleLogout = async () => {
-  setIsLoggingOut(true);
-  try {
-    localStorage.removeItem('userId');
-    setTimeout(() => {
-      router.replace('/');
-    }, 500); // Wait for 500ms before redirecting to show the loader
-  } catch (err) {
-    console.error('Logout error:', err);
-    alert('Failed to logout. Try again.');
-    setIsLoggingOut(false);
-  }
-};
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      localStorage.removeItem('userId');
+      setTimeout(() => {
+        router.replace('/');
+      }, 500); // Wait for 500ms before redirecting to show the loader
+    } catch (err) {
+      console.error('Logout error:', err);
+      alert('Failed to logout. Try again.');
+      setIsLoggingOut(false);
+    }
+  };
 
 
   const toggleHistory = async () => {
@@ -157,9 +157,19 @@ export default function Home() {
             className="flex-grow resize-none border-none bg-transparent outline-none focus:ring-0 text-base sm:text-lg h-10"
             rows={1}
           />
-          <button onClick={handleAsk} className="bg-blue-600 text-white p-2 rounded-lg shadow-md hover:bg-blue-700 transition-all">
-            <PaperAirplaneIcon className="w-6 h-6 text-white" />
+          <button
+            onClick={handleAsk}
+            disabled={isLoading}
+            className={`bg-blue-600 text-white p-2 rounded-lg shadow-md transition-all ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'
+              }`}
+          >
+            {isLoading ? (
+              <ArrowPathIcon className="w-6 h-6 animate-spin text-white" />
+            ) : (
+              <PaperAirplaneIcon className="w-6 h-6 text-white" />
+            )}
           </button>
+
         </div>
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
