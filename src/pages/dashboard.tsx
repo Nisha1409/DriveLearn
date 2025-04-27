@@ -7,14 +7,12 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid';
 
-
-
 export default function Home() {
-  const [question, setQuestion] = useState('');
+  const [manualQuestion, setManualQuestion] = useState('');
+  const [voiceTranscript, setVoiceTranscript] = useState('');
   const [answer, setAnswer] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
 
   const router = useRouter();
 
@@ -32,7 +30,9 @@ export default function Home() {
     setError('');
     setIsLoading(true);
 
-    if (!question.trim()) {
+    const questionToSend = manualQuestion || voiceTranscript; // Prioritize manual input
+
+    if (!questionToSend.trim()) {
       setError('Please enter a question!');
       setIsLoading(false);
       return;
@@ -47,7 +47,7 @@ export default function Home() {
     }
 
     try {
-      const res = await axios.post('/api/ask', { question, userId });
+      const res = await axios.post('/api/ask', { question: questionToSend, userId });
       setAnswer(res.data.answer);
     } catch (err) {
       console.error('Error:', err);
@@ -64,15 +64,14 @@ export default function Home() {
         <h1 className="text-3xl sm:text-4xl font-bold text-center">📘 AI Tutor</h1>
 
         {/* Input + Send Button */}
-        <div className="flex items-center space-x-3 border rounded-md p-3 bg-gray-100">
+        <div className="flex items-center border rounded-md p-3 bg-gray-100">
           <textarea
             placeholder="Ask your question here..."
-            value={question}
-            onChange={(e) => setQuestion(e.target.value)}
+            value={manualQuestion}
+            onChange={(e) => setManualQuestion(e.target.value)}
             className="flex-grow resize-none border-none bg-transparent outline-none focus:ring-0 text-base sm:text-lg h-10"
             rows={1}
           />
-
           <button onClick={handleAsk} className="bg-blue-600 text-white p-2 rounded-lg shadow-md hover:bg-blue-700 transition-all">
             <PaperAirplaneIcon className="w-6 h-6 text-white" />
           </button>
@@ -80,12 +79,12 @@ export default function Home() {
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
         {/* Voice Input Component */}
-        <VoiceInput setQuestion={setQuestion} />
+        <VoiceInput setVoiceTranscript={setVoiceTranscript} />
 
         {/* Transcript Display */}
         <div className="mt-4 bg-gray-100 p-4 rounded-lg shadow-md text-gray-700">
           <p className="text-sm sm:text-base whitespace-pre-wrap font-medium">
-            {question || "Your voice input will appear here..."}
+            {voiceTranscript || "Your voice input will appear here..."}
           </p>
         </div>
 
