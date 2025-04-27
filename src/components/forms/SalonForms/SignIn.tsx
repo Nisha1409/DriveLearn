@@ -2,6 +2,7 @@ import React, { useState } from 'react'; // useState is already imported here
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import Head from 'next/head';
+import {ArrowPathIcon} from '@heroicons/react/24/solid';
 import MainButton from '@/components/elements/button/MainButton';
 import TextField from '@mui/material/TextField';
 import Link from 'next/link';
@@ -93,7 +94,7 @@ const Signup = () => {
             </div>
 
             <MainButton
-              text={isLoading ? 'Signing Up...' : 'Sign Up'}
+              text={isLoading ? <ArrowPathIcon className="w-5 h-5 animate-spin text-white" /> : 'Sign Up'}
               className="w-full py-3 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 transition-all"
               disabled={isLoading}
             />
