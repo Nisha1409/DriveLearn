@@ -69,7 +69,7 @@ export default function Home() {
             placeholder="Ask your question here..."
             value={question}
             onChange={(e) => setQuestion(e.target.value)}
-            className="flex-grow resize-none border-none bg-transparent focus:ring-0 text-base sm:text-lg h-10"
+            className="flex-grow resize-none border-none bg-transparent outline-none focus:ring-0 text-base sm:text-lg h-10"
             rows={1}
           />
 
