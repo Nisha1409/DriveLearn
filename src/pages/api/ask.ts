@@ -15,47 +15,40 @@ const pool = new Pool({
   },
 });
 
-// Store multiple API keys for fallback
-const API_KEYS = [
-  process.env.DEEPSEEK_API_KEY,
-  process.env.DEEPSEEK_API_KEY1,
-  process.env.DEEPSEEK_API_KEY2
-];
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
-// Function to fetch AI response with fallback mechanism
+// Function to fetch AI response from Gemini
 async function fetchAIResponse(prompt: string): Promise<string> {
-  const referer = process.env.REFERER_URL || 'http://localhost:3000';
-
-  for (const apiKey of API_KEYS) {
-    try {
-      console.log(`Trying API key: ${apiKey}`);
-      const openRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  try {
+    console.log(`Fetching response from Gemini for prompt: "${prompt}"`);
+    const geminiRes = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+      {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${apiKey}`,
-          "HTTP-Referer": referer,
-          "X-Title": "DriveLearn",
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "deepseek/deepseek-chat-v3-0324",
-          messages: [{ role: "user", content: prompt }],
+          contents: [{
+            parts: [{ text: prompt }]
+          }]
         }),
-      });
-
-      if (openRes.ok) {
-        const data = await openRes.json();
-        console.log('API response:', data);
-        return data.choices?.[0]?.message?.content || 'No answer received.';
-      } else {
-        console.warn(`API key failed (${apiKey}):`, await openRes.text());
       }
-    } catch (err) {
-      console.error(`Error using API key (${apiKey}):`, err);
-    }
-  }
+    );
 
-  return 'Error: All API keys failed.';
+    if (!geminiRes.ok) {
+      console.warn(`Gemini API request failed:`, await geminiRes.text());
+      return 'Error: Gemini API request failed.';
+    }
+
+    const data = await geminiRes.json();
+    console.log('Gemini API response:', JSON.stringify(data, null, 2));
+
+    return data?.candidates?.[0]?.content?.parts?.[0]?.text ?? 'Error: Unexpected response format.';
+  } catch (err) {
+    console.error(`Error using Gemini API:`, err);
+    return 'Error: Unable to fetch AI response.';
+  }
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -74,7 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const user = userResult.rows[0];
     const prompt = `You are a tutor for the ${user.board} board. Provide a simple and clear explanation for the following question without using extra formatting like bold (**), hashtags (#), or special characters: ${question}`;
-    // 🔥 Fetch AI response using fallback mechanism 🔥
+    
+    // Fetch AI response using Gemini API
     const answer = await fetchAIResponse(prompt);
 
     await pool.query(
